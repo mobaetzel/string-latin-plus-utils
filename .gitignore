@@ -1,0 +1,17 @@
+### IntelliJ IDEA ###
+/.idea/workspace.xml
+/.idea/usage.statistics.xml
+/.idea/uiDesigner.xml
+/.idea/shelf
+
+*.iml
+
+### Mac OS ###
+.DS_Store
+
+### Project ###
+/generator/venv
+/generator/**/*.pyc
+
+/target/
+/src/main/java/de/btzl/stringlatinplusutils/generated/

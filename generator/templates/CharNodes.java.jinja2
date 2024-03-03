@@ -1,0 +1,19 @@
+package de.btzl.stringlatinplusutils.generated;
+
+import de.btzl.stringlatinplusutils.models.CharNode;
+
+/**
+ * CharNodes contains the nodes.
+ * This file is auto-generated.
+ * Do not modify this file manually.
+ */
+public class CharNodes {
+    public static final CharNode root = new CharNode(
+            0x0000,
+            CharClass.BLL,
+            new int[]{},
+            {% for node in nodes %}
+            {{ node }}{% if not loop.last %},{% endif %}
+            {% endfor %}
+    );
+}

@@ -1,0 +1,15 @@
+package de.btzl.stringlatinplusutils.generated;
+
+/**
+ * CharClass is an enum that represents the different character classes that are used in the StringLatinPlusUtils.
+ * This file is auto-generated.
+ * Do not modify this file manually.
+ */
+public enum CharClass {
+    {% for group, desc in groups %}
+    /**
+     * {{ desc }}
+     */
+    {{ group|upper }},
+    {% endfor %}
+}
