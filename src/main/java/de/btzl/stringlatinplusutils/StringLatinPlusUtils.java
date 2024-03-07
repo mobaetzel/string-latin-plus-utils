@@ -2,18 +2,15 @@ package de.btzl.stringlatinplusutils;
 
 import de.btzl.stringlatinplusutils.generated.CharClass;
 import de.btzl.stringlatinplusutils.generated.CharNodes;
-import de.btzl.stringlatinplusutils.models.CharNode;
 
 import java.util.*;
 
 public class StringLatinPlusUtils {
-    private int[] codePoints;
-    private int currentIndex = 0;
     private char invalidChar = '#';
     private final Set<CharClass> allowedCharClasses = new HashSet<>();
-    private StringBuilder stringBuilder = new StringBuilder();
 
-    private StringLatinPlusUtils() {}
+    private StringLatinPlusUtils() {
+    }
 
     public static StringLatinPlusUtils build() {
         return new StringLatinPlusUtils();
@@ -34,41 +31,31 @@ public class StringLatinPlusUtils {
     }
 
     public String transform(String content) {
-        this.codePoints = content.codePoints().toArray();
-        this.stringBuilder = new StringBuilder();
+        var codePoints = content.codePoints().toArray();
+        var sb = new StringBuilder();
 
-        while (currentIndex < codePoints.length) {
-            var charNode = getCharNodeAt(currentIndex);
-            if (charNode.isPresent()) {
-                for (var cp : charNode.get().getMappedCodePoints()) {
-                    stringBuilder.appendCodePoint(cp);
+        for (var currentIndex = 0; currentIndex < codePoints.length; currentIndex++) {
+            var currentCodePoint = codePoints[currentIndex];
+            var currentCharNode = CharNodes.root.findFollowup(currentCodePoint);
+
+            if (currentCharNode != null && allowedCharClasses.contains(currentCharNode.getCharClass())) {
+                while (currentIndex + 1 < codePoints.length && currentCharNode.hasFollowup(codePoints[currentIndex + 1])) {
+                    currentIndex++;
+                    currentCharNode = currentCharNode.findFollowup(codePoints[currentIndex]);
+                }
+
+                if (allowedCharClasses.contains(currentCharNode.getCharClass())) {
+                    for (var tcp : currentCharNode.getTransliteration()) {
+                        sb.appendCodePoint(tcp);
+                    }
+                } else {
+                    sb.append(invalidChar);
                 }
             } else {
-                stringBuilder.append(invalidChar);
+                sb.append(invalidChar);
             }
-            currentIndex++;
         }
 
-        return this.stringBuilder.toString();
-    }
-
-
-
-    private Optional<CharNode> getCharNodeAt(int index) {
-        if (index < 0 || index + 1 > codePoints.length) {
-            return Optional.empty();
-        }
-
-        var codePoint = codePoints[index];
-        if (CharNodes.root.hasFollowupNode(codePoint)) {
-            var currentCharNode = CharNodes.root.getFollowupNode(codePoint);
-            if (allowedCharClasses.contains(currentCharNode.getCharClass())) {
-                return Optional.of(currentCharNode);
-            } else {
-                return Optional.empty();
-            }
-        } else {
-            return Optional.empty();
-        }
+        return sb.toString();
     }
 }

@@ -8,42 +8,32 @@ import java.util.Map;
 public class CharNode {
     private final int codePoint;
     private final CharClass charClass;
-    private final int[] mappedCodePoints;
-    private final CharNode[] followupNodes;
-    private final Map<Integer, Integer> mappedFollowupCodePointsMap;
+    private final int[] transliteration;
+    private final Map<Integer, CharNode> followups;
 
-    public CharNode(int codePoint, CharClass charClass, int[] mappedCodePoints, CharNode... followupNodes) {
+    public CharNode(int codePoint, CharClass charClass, int[] transliteration, CharNode... followups) {
         this.codePoint = codePoint;
         this.charClass = charClass;
-        this.mappedCodePoints = mappedCodePoints;
-        this.followupNodes = followupNodes;
-        this.mappedFollowupCodePointsMap = new HashMap<>();
-        for (int i = 0; i < followupNodes.length; i++) {
-            mappedFollowupCodePointsMap.put(followupNodes[i].codePoint, i);
+        this.transliteration = transliteration;
+        this.followups = new HashMap<>();
+        for (var charNode : followups) {
+            this.followups.put(charNode.codePoint, charNode);
         }
-    }
-
-    public CharNode getFollowupNode(int codePoint) {
-        return followupNodes[mappedFollowupCodePointsMap.get(codePoint)];
-    }
-
-    public boolean hasFollowupNode(int codePoint) {
-        return mappedFollowupCodePointsMap.containsKey(codePoint);
-    }
-
-    public boolean hasFollowupNodes() {
-        return followupNodes.length > 0;
-    }
-
-    public int getCodePoint() {
-        return codePoint;
     }
 
     public CharClass getCharClass() {
         return charClass;
     }
 
-    public int[] getMappedCodePoints() {
-        return mappedCodePoints;
+    public int[] getTransliteration() {
+        return transliteration;
+    }
+
+    public boolean hasFollowup(int codePoint) {
+        return followups.containsKey(codePoint);
+    }
+
+    public CharNode findFollowup(int codePoint) {
+        return followups.get(codePoint);
     }
 }

@@ -5,24 +5,38 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StringLatinPlusUtilsTest {
-
     @Test
     void transform() {
         assertEquals(
-                "HELLO WORLD",
+                "$$$$",
                 StringLatinPlusUtils
                         .build()
-                        .withAllCharClasses()
                         .withInvalidChar('$')
-                        .transform("Hello World")
+                        .transform("1234")
         );
 
         assertEquals(
-                "HELLO WORLD",
+                "SS",
                 StringLatinPlusUtils
                         .build()
                         .withAllCharClasses()
-                        .transform("Héllo World")
+                        .transform("ß")
+        );
+
+        assertEquals(
+                "AE",
+                StringLatinPlusUtils
+                        .build()
+                        .withAllCharClasses()
+                        .transform("ä")
+        );
+
+        assertEquals(
+                "O",
+                StringLatinPlusUtils
+                        .build()
+                        .withAllCharClasses()
+                        .transform("Ő")
         );
     }
 }
