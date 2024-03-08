@@ -30,6 +30,13 @@ group_elements: list[ET.Element] = character_set.findall(ns('groups') + '/' + ns
 char_elements: list[ET.Element] = character_set.findall(ns('char'))
 sequence_elements: list[ET.Element] = character_set.findall(ns('sequence'))
 
+# ------------------- Prepare generated directory ------------------- #
+
+generated_directory_path = './src/main/java/de/btzl/stringlatinplusutils/generated'
+
+if not os.path.exists(generated_directory_path):
+    os.makedirs(generated_directory_path)
+
 # ------------------- Generate CharClass Enum ------------------- #
 
 groups: list[(str, str)] = []
@@ -41,7 +48,7 @@ for group in group_elements:
 
 char_class_enum_template = template_env.get_template('CharClass.java.jinja2')
 char_class_enum_rendered = char_class_enum_template.render(groups=groups)
-char_class_enum_path = './src/main/java/de/btzl/stringlatinplusutils/generated/CharClass.java'
+char_class_enum_path = generated_directory_path + '/CharClass.java'
 with open(char_class_enum_path, 'w') as file:
     file.write(char_class_enum_rendered)
 
@@ -133,6 +140,6 @@ for code_point, mapping in mappings.items():
 
 char_nodes_template = template_env.get_template('CharNodes.java.jinja2')
 char_nodes_rendered = char_nodes_template.render(nodes=nodes)
-char_nodes_path = './src/main/java/de/btzl/stringlatinplusutils/generated/CharNodes.java'
+char_nodes_path = generated_directory_path + '/CharNodes.java'
 with open(char_nodes_path, 'w') as file:
     file.write(char_nodes_rendered)
